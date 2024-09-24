@@ -125,10 +125,10 @@ function moveInfo(e) {
 function updateInfo(){
     if(x<pixelThreshold){
         info.style.color = "#ffffff"
-        info.innerHTML = `<p>Today</p><p>${nighthours} hours of night</p><p>${nighttime}%</p>`               
+        info.innerHTML = `<p><span>&#9789;</span></p><p>Today</p><p>${nighthours} hours of night</p><p>${nighttime}%</p>`               
     } else {
             info.style.color = "#000000"
-            info.innerHTML = `<p>Today</p><p>${dayhours} hours of day</p><p>${daylight}%</p>`               
+            info.innerHTML = `<p><span>&#9737;</span></p><p>Today</p><p>${dayhours} hours of day</p><p>${daylight}%</p>`               
         }
     }
 
