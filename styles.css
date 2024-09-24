@@ -1,0 +1,48 @@
+body{
+    margin:0px;
+    overflow: hidden;
+    font-family: "JetBrains Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+}
+
+/* .jetbrains-mono-thin {
+    font-family: "JetBrains Mono", monospace;
+    font-optical-sizing: auto;
+    font-weight: 100;
+    font-style: normal;
+  } */
+
+#light{
+    height:100svh;
+    display: flex;
+}
+
+#night{
+    background-color: black;
+}
+
+#day{
+    background-color: white;
+
+}
+
+.daynight{
+    width:50svw;
+    height:100%;
+    -webkit-transition:1000ms linear;
+	-moz-transition:1000ms linear;
+	-o-transition:1000ms linear;
+	-ms-transition:1000ms linear;
+	transition:1000ms linear;
+}
+
+#info{
+    color: white;
+    z-index: 100;
+    position: absolute;
+}
+
+
+
