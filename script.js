@@ -140,28 +140,42 @@ function updateInfo(){
         }
     }
 
-function getGeo(){
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            lat = position.coords.latitude;
-            long = position.coords.longitude;
-            apiUrl = "https://api.sunrisesunset.io/json?lat=" + lat + "&lng=" + long + '"'
-            fetchData(apiUrl);
-        }, function(error) {
-          console.error("Error: " + error.message);
-          lat = 51.383741;
-          long = -2.377120;
-          apiUrl = "https://api.sunrisesunset.io/json?lat=" + lat + "&lng=" + long + '"'
-          fetchData(apiUrl);
-        });
-      } else {
-        console.log("Geolocation is not supported by this browser.");
-      }
-}
+// function getGeo(){
+    
+//     if ("geolocation" in navigator) {
+//         navigator.geolocation.getCurrentPosition(function(position) {
+//             console.log("getting")
+//             lat = position.coords.latitude;
+//             long = position.coords.longitude;
+//             // apiUrl = "https://api.sunrisesunset.io/json?lat=" + lat + "&lng=" + long + '"'
+//             apiUrl="https://api.sunrisesunset.io/json?lat=38.907192&lng=-77.036873/"
+//             console.log(apiUrl);
+//             fetchData(apiUrl);
+//         }, function(error) {
+//             console.log("getting")
+//           lat = 51.383741;
+//           long = -2.377120;
+//           apiUrl = "https://api.sunrisesunset.io/json?lat=" + lat + "&lng=" + long + '/"'
+//           fetchData(apiUrl);
+//           console.error("Error: " + error.message);
+//         });
+//       } else {
+//         console.log("getting")
+//         console.log("Geolocation is not supported by this browser.");
+//         lat = 51.383741;
+//         long = -2.377120;
+//         apiUrl = "https://api.sunrisesunset.io/json?lat=" + lat + "&lng=" + long + '/"'
+//         fetchData(apiUrl);
+//       }
+// }
 
 window.onload = (event) => {
     info = document.getElementById('info');
-    getGeo();
+    // getGeo();
+            lat = 51.383741;
+          long = -2.377120;
+          apiUrl = "https://api.sunrisesunset.io/json?lat=" + lat + "&lng=" + long + '/"'
+          fetchData(apiUrl);
   };
 
 
