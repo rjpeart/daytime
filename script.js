@@ -9,6 +9,9 @@ var x;
 var y;
 var windowWidth;
 var pixelThreshold = 0;
+var lat;
+var long;
+var apiUrl;
 
 // Function to fetch data from an API
 function fetchData(url) {
@@ -32,9 +35,14 @@ function fetchData(url) {
 
             calculatePixelThreshold();
 
+            const loading = document.getElementById('loading');
+            loading.style.display = "none";
+
             window.addEventListener("mousemove", (e) => {
                 moveInfo(e);
             });
+
+            
             
         })
         .catch(error => {
@@ -125,19 +133,35 @@ function moveInfo(e) {
 function updateInfo(){
     if(x<pixelThreshold){
         info.style.color = "#ffffff"
-        info.innerHTML = `<p><span>&#9789;</span></p><p>Today</p><p>${nighthours} hours of night</p><p>${nighttime}%</p>`               
+        info.innerHTML = `<p><span>&#9789;</span></p><p>Today</p><p>${nighthours} hours of night</p><p>${nighttime}%</p><p class='small'> Lat ${lat}, Long ${long}</p>`               
     } else {
             info.style.color = "#000000"
-            info.innerHTML = `<p><span>&#9737;</span></p><p>Today</p><p>${dayhours} hours of day</p><p>${daylight}%</p>`               
+            info.innerHTML = `<p><span>&#9737;</span></p><p>Today</p><p>${dayhours} hours of day</p><p>${daylight}%</p><p class='small'> Lat ${lat}, Long ${long}</p>`               
         }
     }
 
+function getGeo(){
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(function(position) {
+            lat = position.coords.latitude;
+            long = position.coords.longitude;
+            apiUrl = "https://api.sunrisesunset.io/json?lat=" + lat + "&lng=" + long + '"'
+            fetchData(apiUrl);
+        }, function(error) {
+          console.error("Error: " + error.message);
+          lat = 51.383741;
+          long = -2.377120;
+          apiUrl = "https://api.sunrisesunset.io/json?lat=" + lat + "&lng=" + long + '"'
+          fetchData(apiUrl);
+        });
+      } else {
+        console.log("Geolocation is not supported by this browser.");
+      }
+}
+
 window.onload = (event) => {
     info = document.getElementById('info');
-    
-    const apiUrl = 'https://api.sunrisesunset.io/json?lat=51.383741&lng=-2.377120';
-    fetchData(apiUrl);
-
+    getGeo();
   };
 
 
