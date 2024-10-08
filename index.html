@@ -11,17 +11,37 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100&display=swap" rel="stylesheet">
 </head>
 <body>
+
+    <div class="loading-container" id="loading-animation">
+        <div class="animation-container">
+            <div class="mask"></div>
+            <div class="loading-animation">
+                <div class="orbit"></div>
+                <div class="planet-container sun-container">
+                    <div class="sun">☀</div>
+                    <div class="sun">☀</div>
+                </div>
+                <div class="planet-container moon-container">
+                    <div class="moon">☾</div>
+                    <div class="moon">☾</div>
+                </div>
+            </div>
+            <div class="loading-text">Getting location data...</div>
+        </div>
+    </div>
     
     <main>
         <p id="info"></p>
         <section id="light">
-            <div id="loading"><p>Getting data</p></div>
             <div class="daynight" id="night">
+                <p id="mobInfo_night" class="mob_info">info</p>
             </div>
-            <div class="daynight" id="day"></div>
+            <div class="daynight" id="day">
+                <p id="mobInfo_day" class="mob_info">info</p>
+            </div>
         </section>
     </main>
-    <script src="script.js"></script>
+    <script src="script2.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.11.4/TweenMax.min.js"></script>
 </body>
 </html>
