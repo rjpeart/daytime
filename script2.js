@@ -2,6 +2,20 @@
 const DEFAULT_LOCATION = { lat: 51.383741, long: -2.377120 };
 const API_URL = "https://api.sunrisesunset.io/json";
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/reverse";
+const IP_GEOLOCATION_API = "https://ipapi.co/json/";
+
+const MAJOR_CITIES = [
+    { name: "New York", lat: 40.7128, long: -74.0060 },
+    { name: "London", lat: 51.5074, long: -0.1278 },
+    { name: "Tokyo", lat: 35.6762, long: 139.6503 },
+    { name: "Paris", lat: 48.8566, long: 2.3522 },
+    { name: "Sydney", lat: -33.8688, long: 151.2093 },
+    { name: "Dubai", lat: 25.2048, long: 55.2708 },
+    { name: "Rio de Janeiro", lat: -22.9068, long: -43.1729 },
+    { name: "Cape Town", lat: -33.9249, long: 18.4241 },
+    { name: "Moscow", lat: 55.7558, long: 37.6173 },
+    { name: "Mumbai", lat: 19.0760, long: 72.8777 }
+];
 
 // State variables
 let state = {
@@ -31,8 +45,9 @@ document.addEventListener('DOMContentLoaded', init);
 
 function init() {
     cacheElements();
-    // getGeolocation();
-    fetchSunData(DEFAULT_LOCATION);
+    createCityDropdown();
+    getGeolocation();
+    // fetchSunData(DEFAULT_LOCATION);
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handleMouseMove);
 }
@@ -45,52 +60,72 @@ function cacheElements() {
     elements.mobInfoNight = document.getElementById('mobInfo_night');
     elements.mobInfoDay = document.getElementById('mobInfo_day');
     elements.loadingAnimation = document.getElementById('loading-animation');
+    elements.citySelect = document.getElementById('city-select');
+
 
 }
 
-// Geolocation and API calls
-// function getGeolocation() {
-//     if ("geolocation" in navigator) {
-//         navigator.geolocation.getCurrentPosition(
-//             position => fetchSunData(position.coords),
-//             error => {
-//                 console.error("Geolocation error:", error.message);
-//                 fetchSunData(DEFAULT_LOCATION);
-//             }
-//         );
-//     } else {
-//         console.log("Geolocation not supported");
-//         fetchSunData(DEFAULT_LOCATION);
-//     }
-// }
-// function getGeolocation() {
-//     if ("geolocation" in navigator) {
-//         navigator.geolocation.getCurrentPosition(
-//             position => fetchSunData(position.coords),
-//             error => {
-//                 console.warn("Geolocation error:", error.message);
-//                 handleGeolocationError();
-//             },
-//             { 
-//                 timeout: 10000,  // Set a timeout of 10 seconds
-//                 maximumAge: 0,   // Force fresh location
-//                 enableHighAccuracy: true  // Request best possible location
-//             }
-//         );
-//     } else {
-//         console.log("Geolocation not supported");
-//         handleGeolocationError();
-//     }
-// }
+// Create and populate the dropdown
+function createCityDropdown() {
+    const select = document.createElement('select');
+    select.id = 'city-select';
+    select.innerHTML = '<option value="">Select a city</option>';
+    MAJOR_CITIES.forEach(city => {
+        const option = document.createElement('option');
+        option.value = JSON.stringify({lat: city.lat, long: city.long});
+        option.textContent = city.name;
+        select.appendChild(option);
+    });
+    select.addEventListener('change', handleCitySelection);
+    document.body.appendChild(select);
+}
 
-// function handleGeolocationError() {
-//     // Display a message to the user
-//     const message = "Unable to retrieve your location. Using default location.";
-//     alert(message);  // You might want to use a more user-friendly notification method
+// Handle city selection
+function handleCitySelection(event) {
+    if (event.target.value) {
+        const coords = JSON.parse(event.target.value);
+        fetchSunData(coords);
+    }
+}
 
-//     // Use the default location
-//     fetchSunData(DEFAULT_LOCATION);
-// }
+function getGeolocation() {
+    if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                fetchSunData(position.coords);
+                updateDropdownWithNearestCity(position.coords);
+            },
+            error => {
+                console.warn("Geolocation error:", error.message);
+                fallbackToIPGeolocation();
+            }
+        );
+    } else {
+        console.log("Geolocation not supported");
+        fallbackToIPGeolocation();
+    }
+}
+
+function fallbackToIPGeolocation() {
+    fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+            const location = { lat: data.latitude, long: data.longitude };
+            fetchSunData(location);
+            updateDropdownWithNearestCity(location);
+        })
+        .catch(error => {
+            console.error("Error fetching IP-based location:", error);
+            useDefaultLocation();
+        });
+}
+
+function useDefaultLocation() {
+    console.log("Using default location");
+    const defaultLocation = MAJOR_CITIES[0];  // Using the first city as default
+    fetchSunData(defaultLocation);
+    elements.citySelect.value = JSON.stringify({lat: defaultLocation.lat, long: defaultLocation.long});
+}
 
 function fetchSunData({ lat, long }) {
     const url = `${API_URL}?lat=${lat}&lng=${long}`;
@@ -105,6 +140,7 @@ function fetchSunData({ lat, long }) {
         .then(() => {
             updateUI();
             elements.loadingAnimation.style.display = "none";
+            elements.citySelect.style.display = "block";  // Show the dropdown
             if(window.innerWidth > 768){
                 elements.info.style.display = "block";
             }
@@ -156,6 +192,68 @@ function updateUI() {
         elements.mobInfoNight.style.display = "none";
         elements.mobInfoDay.style.display = "none";
     }
+}
+
+function createCityDropdown() {
+    const select = document.createElement('select');
+    select.id = 'city-select';
+    
+    // Add the default "Change location" option
+    const defaultOption = document.createElement('option');
+    defaultOption.value = "";
+    defaultOption.textContent = "Change location";
+    select.appendChild(defaultOption);
+
+    // Add the city options
+    MAJOR_CITIES.forEach(city => {
+        const option = document.createElement('option');
+        option.value = JSON.stringify({lat: city.lat, long: city.long});
+        option.textContent = city.name;
+        select.appendChild(option);
+    });
+
+    select.addEventListener('change', handleCitySelection);
+    document.body.appendChild(select);
+    elements.citySelect = select;
+}
+
+function handleCitySelection(event) {
+    if (event.target.value) {
+        const coords = JSON.parse(event.target.value);
+        fetchSunData(coords);
+    }
+}
+
+function updateDropdownWithNearestCity(coords) {
+    const nearest = findNearestCity(coords);
+    const nearestCityValue = JSON.stringify({lat: nearest.lat, long: nearest.long});
+    
+    // Only update if a nearest city was found
+    // if (nearest.name) {
+    //     elements.citySelect.value = nearestCityValue;
+    // } else {
+    //     // If no nearest city found, reset to "Change location"
+    //     elements.citySelect.value = "";
+    // }
+}
+
+function findNearestCity(coords) {
+    return MAJOR_CITIES.reduce((nearest, city) => {
+        const distance = getDistance(coords, city);
+        return distance < nearest.distance ? {...city, distance} : nearest;
+    }, {distance: Infinity});
+}
+
+function getDistance(coords1, coords2) {
+    const R = 6371; // Radius of the Earth in km
+    const dLat = (coords2.lat - coords1.lat) * Math.PI / 180;
+    const dLon = (coords2.long - coords1.long) * Math.PI / 180;
+    const a = 
+        Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.cos(coords1.lat * Math.PI / 180) * Math.cos(coords2.lat * Math.PI / 180) * 
+        Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return R * c;
 }
 
 // Utility functions
@@ -241,11 +339,11 @@ function moveInfoElement(x, y) {
 
 function updateInfo(mouseX) {
     const { dayhours, nighthours, daylight, nighttime, city, country } = state;
-    const isDaytime = mouseX < state.pixelThreshold;
+    const isDaytime = mouseX > state.pixelThreshold;
 
     // Set text color based on background
     const backgroundColor = isDaytime ? "#ffffff" : "#000000";
-    const textColor = isDaytime ? "#ffffff" : "#000000";
+    const textColor = isDaytime ? "#000000" : "#ffffff";
 
     elements.info.style.color = textColor;
 
