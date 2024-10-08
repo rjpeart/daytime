@@ -194,8 +194,19 @@ body {
     padding: 5px;
     font-size: 16px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: 0px solid #ccc;
     background-color: white;
     z-index: 1000;
     display: none;
+    font-family: "JetBrains Mono", monospace;
+}
+
+#city-select:hover {
+  border-color: #888;
+}
+
+#city-select:focus {
+  outline: none;
+  border-color: #555;
+  /* box-shadow: 0 0 5px rgba(81, 203, 238, 1); */
 }
