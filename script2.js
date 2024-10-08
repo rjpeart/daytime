@@ -31,7 +31,8 @@ document.addEventListener('DOMContentLoaded', init);
 
 function init() {
     cacheElements();
-    getGeolocation();
+    // getGeolocation();
+    fetchSunData(DEFAULT_LOCATION);
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handleMouseMove);
 }
@@ -48,20 +49,48 @@ function cacheElements() {
 }
 
 // Geolocation and API calls
-function getGeolocation() {
-    if ("geolocation" in navigator) {
-        navigator.geolocation.getCurrentPosition(
-            position => fetchSunData(position.coords),
-            error => {
-                console.error("Geolocation error:", error.message);
-                fetchSunData(DEFAULT_LOCATION);
-            }
-        );
-    } else {
-        console.log("Geolocation not supported");
-        fetchSunData(DEFAULT_LOCATION);
-    }
-}
+// function getGeolocation() {
+//     if ("geolocation" in navigator) {
+//         navigator.geolocation.getCurrentPosition(
+//             position => fetchSunData(position.coords),
+//             error => {
+//                 console.error("Geolocation error:", error.message);
+//                 fetchSunData(DEFAULT_LOCATION);
+//             }
+//         );
+//     } else {
+//         console.log("Geolocation not supported");
+//         fetchSunData(DEFAULT_LOCATION);
+//     }
+// }
+// function getGeolocation() {
+//     if ("geolocation" in navigator) {
+//         navigator.geolocation.getCurrentPosition(
+//             position => fetchSunData(position.coords),
+//             error => {
+//                 console.warn("Geolocation error:", error.message);
+//                 handleGeolocationError();
+//             },
+//             { 
+//                 timeout: 10000,  // Set a timeout of 10 seconds
+//                 maximumAge: 0,   // Force fresh location
+//                 enableHighAccuracy: true  // Request best possible location
+//             }
+//         );
+//     } else {
+//         console.log("Geolocation not supported");
+//         handleGeolocationError();
+//     }
+// }
+
+// function handleGeolocationError() {
+//     // Display a message to the user
+//     const message = "Unable to retrieve your location. Using default location.";
+//     alert(message);  // You might want to use a more user-friendly notification method
+
+//     // Use the default location
+//     fetchSunData(DEFAULT_LOCATION);
+// }
 
 function fetchSunData({ lat, long }) {
     const url = `${API_URL}?lat=${lat}&lng=${long}`;
