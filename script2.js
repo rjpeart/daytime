@@ -11,7 +11,9 @@ const MAJOR_CITIES = [
     { name: "Paris", lat: 48.8566, long: 2.3522 },
     { name: "Sydney", lat: -33.8688, long: 151.2093 },
     { name: "Dubai", lat: 25.2048, long: 55.2708 },
+    { name: "Reykjavík", lat: 64.125613, long: -21.848036 },
     { name: "Rio de Janeiro", lat: -22.9068, long: -43.1729 },
+    { name: "Palestine", lat: 31.363759, long: 34.317467 },
     { name: "Cape Town", lat: -33.9249, long: 18.4241 },
     { name: "Moscow", lat: 55.7558, long: 37.6173 },
     { name: "Mumbai", lat: 19.0760, long: 72.8777 }
@@ -217,7 +219,7 @@ function updateMobileInfo() {
 function createCityDropdown() {
     const select = document.createElement('select');
     select.id = 'city-select';
-    select.innerHTML = '<option value="">Select a city</option>';
+    select.innerHTML = '<option value="">Select a location</option>';
     MAJOR_CITIES.forEach(city => {
         const option = document.createElement('option');
         option.value = JSON.stringify({lat: city.lat, long: city.long});
