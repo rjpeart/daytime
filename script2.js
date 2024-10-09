@@ -129,7 +129,7 @@ function fetchCityData(lat, long) {
     const url = `${NOMINATIM_URL}?format=json&lat=${lat}&lon=${long}`;
     return fetchData(url)
         .then(data => {
-            state.city = data.address.city || data.address.town || data.address.village || "City not found";
+            state.city = data.address.city || data.address.town || data.address.village || data.address.county || "City not found";
             state.country = data.address.country || "Country not found";
         });
 }
