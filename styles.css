@@ -199,6 +199,7 @@ body {
     z-index: 1000;
     display: none;
     font-family: "JetBrains Mono", monospace;
+    color: black;
 }
 
 #city-select:hover {
