@@ -99,6 +99,7 @@ function handleLocationError() {
 
 //API Functions
 async function fetchSunData({ lat, long }) {
+    elements.loadingAnimation.style.display = "flex";
     if (!lat || !long) {
         throw new Error("Invalid coordinates");
     }
